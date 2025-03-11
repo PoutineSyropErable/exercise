@@ -1,0 +1,51 @@
+heres the adress, value again
+Addr Value
+
+===frame 0== (page 1)
+0b000000 0xd1 (1)
+0b000001 0xf7 (7)
+0b000010 0x6f (f = 15)
+0b000011 0x00 (invalid)
+
+====frame 1==
+0b000100 0x53
+0b000101 0x65
+0b000110 0x63
+0b000111 0x72
+
+=== frame 2== (dir entry)
+0b001000 0x00 (invalid)
+0b001001 0xf0 (frame 0)
+0b001010 0xf5 (frame 5)
+0b001011 0xf3 (frame 3)
+
+=== frame 3=== (page 3)
+0b001100 0x00 (invalid)
+0b001101 0xca (a)
+0b001110 0x44 (4) 
+0b001111 0xc8 (8)
+
+== frame 4===
+0b010000 0xaf
+0b010001 0x05
+0b010010 0xf5
+0b010011 0x45
+
+=== frame 5=== (page 2)
+0b010100 0xd9 (9)
+0b010101 0x00 (invalid)
+0b010110 0xfc (c)
+0b010111 0x5d (d)
+
+=== frame 6===
+0b011000 0xef
+0b011001 0x59
+0b011010 0xee
+0b011011 0xd6
+
+=== frame 7===
+0b011100 0x65
+0b011101 0x74
+0b011110 0x21
+0b011111 0x00
+

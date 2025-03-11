@@ -1,0 +1,30 @@
+
+== Dir entry == 
+0b001000 0x00 (invalid)
+0b001001 0xf0 (frame 0)
+0b001010 0xf5 (frame 5)
+0b001011 0xf3 (frame 3)
+
+== page 0 ==
+invalid for all
+
+
+== page 1==
+0b000000 0xd1 (1)
+0b000001 0xf7 (7)
+0b000010 0x6f (f = 15)
+0b000011 0x00 (invalid)
+
+
+== page 2==
+0b010100 0xd9 (9)
+0b010101 0x00 (invalid)
+0b010110 0xfc (c = 12)
+0b010111 0x5d (d = 13)
+
+
+== page 3 ==
+0b001100 0x00 (invalid)
+0b001101 0xca (a = 10)
+0b001110 0x44 (4) 
+0b001111 0xc8 (8)
