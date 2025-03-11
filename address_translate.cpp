@@ -7,38 +7,23 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
-void* requestAddress(void* desired_addr, size_t size) {
-	// Attempt to map at the desired address (without forcing)
-	void* ptr = mmap(desired_addr, size,
-	                 PROT_READ | PROT_WRITE,
-	                 MAP_PRIVATE | MAP_ANONYMOUS,
-	                 -1, 0);
-
-	if (ptr == MAP_FAILED) {
-		perror("mmap failed");
-		return NULL;
-	}
-
-	printf("Allocated memory at %p\n", ptr);
-	return ptr;
-}
 // Compile-time log2 function (constexpr)
 constexpr int log2_constexpr(int n, int acc = 0) {
 	return (n <= 1) ? acc : log2_constexpr(n / 2, acc + 1);
 }
 
 // Global constexpr values (assumed known at compile-time)
-constexpr int archSize = 32;                         // Can be adjusted dynamically
-constexpr int dirEntryN = 1024;                      // 1024 entries per directory
-constexpr int pageSize = 4096;                       // 4KB page size
-constexpr int sizeAddress = archSize / sizeof(char); // size of 1 byte.
+constexpr int archSize = 32;                            // Can be adjusted dynamically
+constexpr int dirEntryN = 1024;                         // 1024 entries per directory
+constexpr int pageSize = 4096;                          // 4KB page size
+constexpr int sizeofVoidStar = archSize / sizeof(char); // size of 1 byte.
 
 // Compute bit sizes
 constexpr int offsetBits = log2_constexpr(pageSize);                   // log2(4096) = 12 bits
 constexpr int tableIndexBits = log2_constexpr(dirEntryN);              // log2(1024) = 10 bits
 constexpr int dirIndexBits = archSize - (offsetBits + tableIndexBits); // 32 - (12 + 10) = 10 bits
 
-constexpr int pageEntryN = 1u << (offsetBits - log2_constexpr(sizeAddress));
+constexpr int pageEntryN = 1u << (offsetBits - log2_constexpr(sizeofVoidStar));
 
 constexpr int metadataSize = 4;
 // Frame number mask (masks out metadata bits, leaves frame number bits)
@@ -106,6 +91,22 @@ class Address {
 	uint32_t getOffset() const { return offset; }
 };
 
+void* requestAddress(void* desired_addr, size_t size) {
+	// Attempt to map at the desired address (without forcing)
+	void* ptr = mmap(desired_addr, size,
+	                 PROT_READ | PROT_WRITE,
+	                 MAP_PRIVATE | MAP_ANONYMOUS,
+	                 -1, 0);
+
+	if (ptr == MAP_FAILED) {
+		perror("mmap failed");
+		return NULL;
+	}
+
+	printf("Allocated memory at %p\n", ptr);
+	return ptr;
+}
+
 // ============================
 // Physical Address Class
 // ============================
@@ -148,25 +149,28 @@ PhysicalAddress virtualToPhysical(Address vAddr) {
 	// Step 1: Fetch Page Table Base Address from Page Directory (PDE)
 	// ============================
 
-	char* pageTablePointer = (char*)pageDirectory + vAddr.getDirIndex() * sizeAddress;
+	char* pageTablePointer = (char*)pageDirectory + vAddr.getDirIndex() * sizeofVoidStar;
 
 	printf("Page table pointer %p\n", pageTablePointer);
 	requestAddress(pageTablePointer, sizeof(uint32_t*));
-	uint32_t pageTableEntry = *(uint32_t*)pageTablePointer;
+	*(char**)pageTablePointer = (char*)malloc(pageEntryN * sizeofVoidStar);
+	// change the value of pageTable pointer, simulating it already having a value.
 
+	uint32_t pageTableEntry = *(uint32_t*)pageTablePointer;
+	std::cout << "Page table entry: " << pageTableEntry << std::endl;
 	// Extract frame number and metadata from PDE
 	uint32_t pageTableFrameNumber = pageTableEntry & FRAME_NUMBER_MASK; // Extracts frame number
 	uint32_t pageTableMetadata = pageTableEntry & METADATA_MASK;        // Extracts metadata bits
 
 	// Compute the base address of the page table
-	char* pageTableBase = (char*)(uintptr_t)pageTableFrameNumber + vAddr.getTableIndex() * sizeAddress;
+	char* pageTableBase = (char*)(uintptr_t)pageTableFrameNumber + vAddr.getTableIndex() * sizeofVoidStar;
 
 	// ============================
 	// Step 2: Fetch Physical Page Base from Page Table (PTE)
 	// ============================
 
 	// Fetch PTE entry and cast to integer
-	printf("Page table pointer %p\n", pageTableBase);
+	printf("Page table base %p\n", pageTableBase);
 	requestAddress(pageTableBase, sizeof(uint32_t*));
 	uint32_t physicalFrameEntry = *(uint32_t*)pageTableBase;
 
@@ -175,7 +179,7 @@ PhysicalAddress virtualToPhysical(Address vAddr) {
 	uint32_t physicalMetadata = physicalFrameEntry & METADATA_MASK;
 
 	// Compute base address of the physical frame
-	char* physicalFrameBase = (char*)(uintptr_t)(physicalFrameNumber) + vAddr.getOffset() * sizeAddress;
+	char* physicalFrameBase = (char*)(uintptr_t)(physicalFrameNumber) + vAddr.getOffset() * sizeofVoidStar;
 
 	// ============================
 	// Step 3: Compute Final Physical Address
@@ -196,7 +200,8 @@ int main() {
 	uint32_t virtualAddress = 0x123456;
 	Address addr(virtualAddress);
 
-	pageDirectory = (char*)malloc(dirEntryN * sizeAddress);
+	pageDirectory = (char*)malloc(dirEntryN * sizeofVoidStar);
+	printf("Frame number mask: %d, metadata mask: %d\n", FRAME_NUMBER_MASK, METADATA_MASK);
 
 	// Print Virtual Address Information
 	addr.printSizes();

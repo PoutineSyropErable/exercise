@@ -1,14 +1,14 @@
 let SessionLoad = 1
 let s:so_save = &g:so | let s:siso_save = &g:siso | setg so=0 siso=0 | setl so=-1 siso=-1
 let v:this_session=expand("<sfile>:p")
+let VimuxOrientation = "v"
 let VimuxTmuxCommand = "tmux"
 let VimuxResetSequence = "C-u"
 let VimuxOpenExtraArgs = ""
-let VimuxPromptString = "Command? "
-let VimuxOrientation = "v"
 let VimuxRunnerName = ""
+let VimuxPromptString = "Command? "
 let NvimTreeSetup =  1 
-let ScopeState = "{\"last_tab\":1,\"cache\":[[\"\\/usr\\/include\\/stdlib.h\",\"\\/home\\/francois\\/Documents\\/University (Real)\\/Semester 10\\/Comp 310\\/GradedExercises\\/build.sh\",\"\\/home\\/francois\\/Documents\\/University (Real)\\/Semester 10\\/Comp 310\\/GradedExercises\\/address_translate.cpp\"]]}"
+let ScopeState = "{\"cache\":[[\"\\/usr\\/include\\/stdlib.h\",\"\\/home\\/francois\\/Documents\\/University (Real)\\/Semester 10\\/Comp 310\\/GradedExercises\\/build.sh\",\"\\/home\\/francois\\/Documents\\/University (Real)\\/Semester 10\\/Comp 310\\/GradedExercises\\/address_translate.cpp\"]],\"last_tab\":1}"
 let AnsiEsc_Enabled =  1 
 let VimuxRunnerType = "pane"
 let NvimTreeRequired =  1 
@@ -26,7 +26,7 @@ else
 endif
 badd +730 /usr/include/stdlib.h
 badd +4 ~/Documents/University\ (Real)/Semester\ 10/Comp\ 310/GradedExercises/build.sh
-badd +171 ~/Documents/University\ (Real)/Semester\ 10/Comp\ 310/GradedExercises/address_translate.cpp
+badd +213 ~/Documents/University\ (Real)/Semester\ 10/Comp\ 310/GradedExercises/address_translate.cpp
 argglobal
 %argdel
 $argadd ~/Documents/University\ (Real)/Semester\ 10/Comp\ 310/GradedExercises/address_translate.cpp
@@ -45,12 +45,12 @@ set winminwidth=0
 set winwidth=1
 argglobal
 balt /usr/include/stdlib.h
-let s:l = 171 - ((14 * winheight(0) + 14) / 29)
+let s:l = 213 - ((14 * winheight(0) + 14) / 28)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 171
-normal! 0
+keepjumps 213
+normal! 035|
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
