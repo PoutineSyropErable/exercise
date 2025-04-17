@@ -1,14 +1,14 @@
 let SessionLoad = 1
 let s:so_save = &g:so | let s:siso_save = &g:siso | setg so=0 siso=0 | setl so=-1 siso=-1
 let v:this_session=expand("<sfile>:p")
-let VimuxOrientation = "v"
 let VimuxTmuxCommand = "tmux"
 let VimuxResetSequence = "C-u"
 let VimuxOpenExtraArgs = ""
 let VimuxRunnerName = ""
 let VimuxPromptString = "Command? "
+let VimuxOrientation = "v"
 let NvimTreeSetup =  1 
-let ScopeState = "{\"cache\":[[\"\\/usr\\/include\\/stdlib.h\",\"\\/home\\/francois\\/Documents\\/University (Real)\\/Semester 10\\/Comp 310\\/GradedExercises\\/build.sh\",\"\\/home\\/francois\\/Documents\\/University (Real)\\/Semester 10\\/Comp 310\\/GradedExercises\\/address_translate.cpp\"]],\"last_tab\":1}"
+let ScopeState = "{\"last_tab\":1,\"cache\":[[\"\"]]}"
 let AnsiEsc_Enabled =  1 
 let VimuxRunnerType = "pane"
 let NvimTreeRequired =  1 
@@ -24,33 +24,9 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +730 /usr/include/stdlib.h
-badd +4 ~/Documents/University\ (Real)/Semester\ 10/Comp\ 310/GradedExercises/build.sh
-badd +213 ~/Documents/University\ (Real)/Semester\ 10/Comp\ 310/GradedExercises/address_translate.cpp
 argglobal
 %argdel
-$argadd ~/Documents/University\ (Real)/Semester\ 10/Comp\ 310/GradedExercises/address_translate.cpp
-edit ~/Documents/University\ (Real)/Semester\ 10/Comp\ 310/GradedExercises/address_translate.cpp
-let s:save_splitbelow = &splitbelow
-let s:save_splitright = &splitright
-set splitbelow splitright
-let &splitbelow = s:save_splitbelow
-let &splitright = s:save_splitright
-wincmd t
-let s:save_winminheight = &winminheight
-let s:save_winminwidth = &winminwidth
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-argglobal
-balt /usr/include/stdlib.h
-let s:l = 213 - ((14 * winheight(0) + 14) / 28)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 213
-normal! 035|
+$argadd ~/Documents/University\ (Real)/Semester\ 10/Comp\ 310/GradedExercises/fork.c
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
@@ -58,8 +34,6 @@ endif
 unlet! s:wipebuf
 set winheight=1 winwidth=20
 let &shortmess = s:shortmess_save
-let &winminheight = s:save_winminheight
-let &winminwidth = s:save_winminwidth
 let s:sx = expand("<sfile>:p:r")."x.vim"
 if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)
